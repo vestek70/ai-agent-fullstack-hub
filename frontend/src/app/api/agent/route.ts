@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     console.error("Agent proxy error:", error);
     return NextResponse.json(
       {
-        error: "Не удалось подключиться к Python FastAPI бэкенду (порт 8000). Убедитесь, что бэкенд запущен.",
+        error: "Não foi possível conectar ao backend Python FastAPI (porta 8000). Verifique se o servidor backend está em execução.",
         details: error.message,
       },
       { status: 502 }

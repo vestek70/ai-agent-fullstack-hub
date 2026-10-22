@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI Agent Fullstack Hub | Next.js + Python + Tailwind",
-  description: "Autonomous AI Agent with Tool Calling (SQL & External APIs) built on Next.js, Python FastAPI, Gemini & Hermes.",
-  keywords: ["AI Agent", "Next.js", "Python", "FastAPI", "Gemini", "Hermes", "Tool Calling", "Tailwind CSS"],
+  title: "AI Agent Fullstack Hub | DeepSeek V4 + Next.js + Python",
+  description: "Agente Autônomo de IA com Tool Calling (SQL e APIs externas) desenvolvido em Next.js 16, Python FastAPI, DeepSeek V4 e Nous Hermes com UI em Tailwind CSS.",
+  keywords: ["AI Agent", "DeepSeek V4", "Next.js", "Python", "FastAPI", "Hermes", "Tool Calling", "Tailwind CSS", "Portfólio"],
 };
 
 export default function RootLayout({
@@ -24,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ru" className={`${geistSans.variable} ${geistMono.variable} dark`}>
+    <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable} dark`}>
       <body className="min-h-screen bg-slate-950 text-slate-100 antialiased selection:bg-cyan-500 selection:text-white">
         {children}
       </body>

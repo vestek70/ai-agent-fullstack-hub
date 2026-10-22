@@ -80,45 +80,49 @@ interface AgentResponse {
 const PRESET_QUERIES = [
   {
     icon: "📊",
-    label: "Топ-5 клиентов по сумме заказов (SQL)",
-    prompt: "Покажи топ-5 клиентов по сумме заказов с группировкой и общей суммой",
+    label: "Top 5 clientes por faturamento (SQL)",
+    prompt: "Mostre os top 5 clientes por valor total de pedidos com agrupamento e soma total",
     type: "sql"
   },
   {
     icon: "🪙",
-    label: "Курсы Bitcoin, Ethereum и Solana (API)",
-    prompt: "Получи актуальные котировки Bitcoin, Ethereum и Solana через внешний финансовый API",
+    label: "Cotações de Bitcoin, Ethereum e Solana (API)",
+    prompt: "Obtenha as cotações atuais de Bitcoin, Ethereum e Solana através da API financeira externa",
     type: "api"
   },
   {
     icon: "📦",
-    label: "Анализ выручки по категориям товаров (SQL)",
-    prompt: "Проанализируй категории товаров: средняя цена, общий остаток на складе и рейтинг",
+    label: "Receita e estoque por categoria (SQL)",
+    prompt: "Analise as categorias de produtos: preço médio, estoque total e avaliação média",
     type: "sql"
   },
   {
     icon: "⚡",
-    label: "Топ AI Agent репозиториев на GitHub (API)",
-    prompt: "Найди самые популярные репозитории на тему ai-agents на GitHub с количеством звезд",
+    label: "Top repositórios de IA no GitHub (API)",
+    prompt: "Encontre os repositórios mais populares sobre ai-agents no GitHub com contagem de estrelas",
     type: "api"
   },
   {
     icon: "🎫",
-    label: "Критические открытые тикеты (SQL)",
-    prompt: "Выведи все критические и приоритетные тикеты поддержки с указанием клиента и проблемы",
+    label: "Chamados críticos de suporte (SQL)",
+    prompt: "Liste todos os tickets de suporte críticos e de alta prioridade com cliente e problema",
     type: "sql"
   },
   {
     icon: "🌤️",
-    label: "Погода и температура в Токио (API)",
-    prompt: "Узнай текущую погоду, влажность и температуру в Токио",
+    label: "Clima e temperatura em Tóquio (API)",
+    prompt: "Consulte o clima atual, umidade e temperatura em Tóquio",
     type: "api"
   }
 ];
 
 function getDemoFallback(query: string, model: string): AgentResponse {
   const qLower = query.toLowerCase();
-  const isCrypto = qLower.includes("крипт") || qLower.includes("btc") || qLower.includes("bitcoin") || qLower.includes("eth") || qLower.includes("solana");
+  const isCrypto = qLower.includes("cripto") || qLower.includes("btc") || qLower.includes("bitcoin") || qLower.includes("eth") || qLower.includes("solana");
+  const isWeather = qLower.includes("clima") || qLower.includes("tempo") || qLower.includes("temperatura") || qLower.includes("toquio") || qLower.includes("tóquio");
+  const isTickets = qLower.includes("ticket") || qLower.includes("chamado") || qLower.includes("suporte") || qLower.includes("crítico");
+
+  const providerLabel = model.includes("hermes") ? "Nous Hermes 3 Engine" : "DeepSeek V4 Engine";
 
   if (isCrypto) {
     return {
@@ -128,18 +132,18 @@ function getDemoFallback(query: string, model: string): AgentResponse {
       status: "success",
       total_time_ms: 18.5,
       kpis: [
-        { label: "Bitcoin (BTC)", value: "$98,420.50", subtext: "24ч: +3.45%", trend: "up" },
-        { label: "Источников котировок", value: "3", subtext: "CoinGecko API", trend: "neutral" },
-        { label: "Задержка API", value: "18.5 мс", subtext: "HTTPS REST", trend: "up" }
+        { label: "Bitcoin (BTC)", value: "$98,420.50", subtext: "24h: +3.45%", trend: "up" },
+        { label: "Ativos Rastreados", value: "3", subtext: "CoinGecko API", trend: "neutral" },
+        { label: "Latência da API", value: "18.5 ms", subtext: "HTTPS REST", trend: "up" }
       ],
       steps: [
-        { step_number: 1, step_type: "thought", title: "Интерпретация задачи и планирование", description: "Запрос котировок криптовалют. Вызываю CoinGecko API через функцию fetch_external_api.", duration_ms: 4.1 },
-        { step_number: 2, step_type: "tool_call", title: "Вызов инструмента: fetch_external_api", description: "Агент вызвал внешний API с аргументами source='crypto', query='bitcoin,ethereum,solana'", duration_ms: 2.2 },
-        { step_number: 3, step_type: "tool_result", title: "Выполнение инструмента (12.2 мс)", description: "Внешний API возвратил свежие рыночные данные.", duration_ms: 12.2 },
-        { step_number: 4, step_type: "synthesis", title: "Синтез структурированного результата", description: "Форматирование цен, изменений за 24 часа и расчет капитализации.", duration_ms: 3.0 }
+        { step_number: 1, step_type: "thought", title: "Interpretação da tarefa e planejamento", description: "O usuário solicitou cotações de criptomoedas. Acionando a API CoinGecko através da ferramenta 'fetch_external_api'.", duration_ms: 4.1 },
+        { step_number: 2, step_type: "tool_call", title: "Chamada de ferramenta: fetch_external_api", description: "O agente executou a chamada da API com parâmetros: source='crypto', query='bitcoin,ethereum,solana'", duration_ms: 2.2 },
+        { step_number: 3, step_type: "tool_result", title: "Execução da ferramenta (12.2 ms)", description: "A API externa retornou dados de mercado atualizados com sucesso.", duration_ms: 12.2 },
+        { step_number: 4, step_type: "synthesis", title: "Síntese do resultado estruturado", description: "Formatação de preços, variações de 24 horas e capitalização de mercado.", duration_ms: 3.0 }
       ],
       table_data: {
-        columns: ["Ассет", "Цена (USD)", "Изменение 24ч", "Рыночная капитализация"],
+        columns: ["Ativo", "Preço (USD)", "Variação 24h", "Cap. de Mercado"],
         rows: [
           ["Bitcoin", "$98,420.50", "+3.45%", "$1,940,500,000,000"],
           ["Ethereum", "$3,240.10", "+1.82%", "$389,400,000,000"],
@@ -148,61 +152,100 @@ function getDemoFallback(query: string, model: string): AgentResponse {
         total_count: 3
       },
       insights: [
-        "Данные получены в реальном времени через внешний REST API CoinGecko.",
-        "Волатильность рынка за последние 24 часа находится в пределах стандартного диапазона."
+        "Dados de mercado coletados em tempo real via API pública do CoinGecko.",
+        "A volatilidade das últimas 24 horas permanece dentro das faixas normais de negociação."
       ],
-      markdown_answer: "### 🪙 Актуальные курсы криптовалют\nАгент успешно обратился к внешнему финансовому API и спарсил котировки для цифровых активов."
+      markdown_answer: "### 🪙 Cotações Atualizadas de Criptomoedas\nO agente consultou a API financeira externa e retornou cotações precisas para os principais ativos digitais."
     };
   }
 
-  // Default: Enterprise SQL (Customers & Orders)
+  if (isTickets) {
+    return {
+      query,
+      model_name: model,
+      provider: providerLabel,
+      status: "success",
+      total_time_ms: 0.92,
+      executed_sql: "SELECT t.id, c.name as customer, t.subject, t.priority, t.status, t.category FROM support_tickets t JOIN customers c ON t.customer_id = c.id ORDER BY CASE t.priority WHEN 'Critical' THEN 1 WHEN 'High' THEN 2 ELSE 3 END LIMIT 5;",
+      kpis: [
+        { label: "Total de Chamados", value: "5", subtext: "Fila de suporte", trend: "neutral" },
+        { label: "Chamados Críticos (P1)", value: "2", subtext: "Atenção prioritária", trend: "down" },
+        { label: "Chamados Abertos", value: "4", subtext: "Em atendimento", trend: "neutral" },
+        { label: "Tempo de Resposta", value: "0.92 ms", subtext: "Índice SQL", trend: "up" }
+      ],
+      steps: [
+        { step_number: 1, step_type: "thought", title: "Interpretação da tarefa e planejamento", description: "Análise de tickets de suporte prioritários no banco relacional.", duration_ms: 0.2 },
+        { step_number: 2, step_type: "tool_call", title: "Chamada de ferramenta: execute_sql_query", description: "Disparo de query SQL com filtro de prioridade crítica.", duration_ms: 0.1 },
+        { step_number: 3, step_type: "tool_result", title: "Execução da ferramenta (0.92 ms)", description: "Consulta executada no SQLite/PostgreSQL com 5 registros retornados.", duration_ms: 0.92 },
+        { step_number: 4, step_type: "synthesis", title: "Síntese do resultado estruturado", description: "Geração de cartões de KPIs e alertas para a equipe de engenharia.", duration_ms: 0.2 }
+      ],
+      table_data: {
+        columns: ["ID", "Cliente", "Assunto", "Prioridade", "Status", "Categoria"],
+        rows: [
+          [1, "TechNova Systems", "Latência elevada em consultas vetoriais", "Critical", "Open", "Infraestrutura"],
+          [4, "Tokyo AI Dynamics", "Falha de autenticação via Token mTLS", "Critical", "In Progress", "Segurança"],
+          [2, "Apex Cloud Inc", "Exportação de relatórios em lote lenta", "High", "Open", "Performance"],
+          [6, "Bavaria AutoSoft", "Dúvida sobre webhook de faturamento", "Medium", "Open", "Cobrança"],
+          [3, "Nordic Retail Lab", "Atualização de schema de inventário", "Medium", "Resolved", "Banco de Dados"]
+        ],
+        total_count: 5
+      },
+      insights: [
+        "Foram detectados **2 chamados críticos (P1)** relacionados à latência e autenticação de APIs.",
+        "O tempo médio de resposta do banco de dados relacional foi de **0.92 ms**."
+      ],
+      markdown_answer: "### 🎫 Monitoramento de Chamados de Suporte\nO agente localizou **5 chamados prioritários** na fila de atendimento com destaque para incidentes de infraestrutura."
+    };
+  }
+
+  // Padrão: Clientes e Pedidos (SQL Empresarial)
   return {
     query,
     model_name: model,
-    provider: model.includes("hermes") ? "Hermes 3 Engine" : "Gemini 1.5 Pro Engine",
+    provider: providerLabel,
     status: "success",
     total_time_ms: 0.81,
     executed_sql: "SELECT c.name, c.company, c.country, c.tier, COUNT(o.id) as total_orders, ROUND(SUM(o.total_amount), 2) as total_spent FROM customers c JOIN orders o ON c.id = o.customer_id GROUP BY c.id ORDER BY total_spent DESC LIMIT 5;",
     kpis: [
-      { label: "Совокупная сумма", value: "$184,920.50", subtext: "Топ выборка", trend: "up" },
-      { label: "Лидер по заказам", value: "TechNova Systems", subtext: "Максимальный LTV", trend: "up" },
-      { label: "Записей в ответе", value: "5", subtext: "Лимит выборки", trend: "neutral" },
-      { label: "Время выполнения", value: "0.81 мс", subtext: "PostgreSQL/SQLite", trend: "up" }
+      { label: "Receita Total", value: "$184,920.50", subtext: "Top 5 clientes", trend: "up" },
+      { label: "Cliente Líder", value: "TechNova Systems", subtext: "Maior LTV", trend: "up" },
+      { label: "Registros Retornados", value: "5", subtext: "Amostragem", trend: "neutral" },
+      { label: "Latência do Banco", value: "0.81 ms", subtext: "PostgreSQL/SQLite", trend: "up" }
     ],
     steps: [
-      { step_number: 1, step_type: "thought", title: "Интерпретация задачи и планирование", description: "Пользователь запрашивает аналитику клиентов и объема заказов. Генерирую SQL-запрос с JOIN между customers и orders.", duration_ms: 0.2 },
-      { step_number: 2, step_type: "tool_call", title: "Вызов инструмента: execute_sql_query", description: "Агент инициировал вызов локальной функции с переданным SQL SELECT запросом.", duration_ms: 0.1 },
-      { step_number: 3, step_type: "tool_result", title: "Выполнение инструмента (0.81 мс)", description: "Локальная функция базы данных вернула 5 структурированных строк.", duration_ms: 0.81 },
-      { step_number: 4, step_type: "synthesis", title: "Синтез структурированного результата", description: "Агрегация метрик LTV, выделение лидера продаж и формирование интерфейсных карточек.", duration_ms: 0.2 }
+      { step_number: 1, step_type: "thought", title: "Interpretação da tarefa e planejamento", description: "O usuário solicitou análise de faturamento por cliente. Gerando query SQL com JOIN entre 'customers' e 'orders'.", duration_ms: 0.2 },
+      { step_number: 2, step_type: "tool_call", title: "Chamada de ferramenta: execute_sql_query", description: "O agente disparou a função local com o comando SQL SELECT agregado.", duration_ms: 0.1 },
+      { step_number: 3, step_type: "tool_result", title: "Execução da ferramenta (0.81 ms)", description: "A função local do banco retornou 5 registros estruturados.", duration_ms: 0.81 },
+      { step_number: 4, step_type: "synthesis", title: "Síntese do resultado estruturado", description: "Cálculo de LTV, destaque do cliente líder e renderização das métricas no dashboard.", duration_ms: 0.2 }
     ],
     table_data: {
-      columns: ["Клиент", "Компания", "Страна", "Тариф", "Заказов", "Сумма ($)"],
+      columns: ["Cliente", "Empresa", "País", "Plano", "Total de Pedidos", "Valor Total (USD)"],
       rows: [
-        ["TechNova Systems", "TechNova AG", "Germany", "Enterprise", 42, "$54,200.00"],
-        ["Apex Cloud Inc", "Apex Cloud Sol.", "USA", "Enterprise", 38, "$48,150.00"],
-        ["Tokyo AI Dynamics", "Tokyo AI Labs", "Japan", "Enterprise", 29, "$34,800.00"],
-        ["Sao Paulo Fintech", "SP Fintech Corp", "Brazil", "Growth", 24, "$26,400.00"],
-        ["Nordic Retail Lab", "Nordic Retail Group", "Sweden", "Growth", 19, "$21,370.50"]
+        ["TechNova Systems", "TechNova AG", "Alemanha", "Enterprise", 42, "$54,200.00"],
+        ["Apex Cloud Inc", "Apex Cloud Sol.", "EUA", "Enterprise", 38, "$48,150.00"],
+        ["Tokyo AI Dynamics", "Tokyo AI Labs", "Japão", "Enterprise", 29, "$34,800.00"],
+        ["Sao Paulo Fintech", "SP Fintech Corp", "Brasil", "Growth", 24, "$26,400.00"],
+        ["Nordic Retail Lab", "Nordic Retail Group", "Suécia", "Growth", 19, "$21,370.50"]
       ],
       total_count: 5
     },
     insights: [
-      "Клиент **TechNova Systems** генерирует наибольший доход в данной выборке ($54,200.00).",
-      "Средний чек в топ-5 составляет **$36,984.10**.",
-      "Географическое распределение клиентов охватывает ключевые рынки: Германия, США, Япония, Бразилия."
+      "O cliente **TechNova Systems** lidera o volume de compras com **$54,200.00** de receita total.",
+      "O ticket médio entre os top clientes é de **$36,984.10**.",
+      "Distribuição geográfica estratégica cobrindo os mercados de Alemanha, EUA, Japão e Brasil."
     ],
-    markdown_answer: "### 📊 Результат выполнения SQL-запроса\nАгент выполнил запрос к таблицам `customers` и `orders` за **0.81 мс**.\nОбщая сумма заказов в выборке: **$184,920.50** по 5 ключевым аккаунтам."
+    markdown_answer: "### 📊 Resultado da Análise SQL\nO agente executou a consulta nas tabelas `customers` e `orders` em **0.81 ms**.\nVolume total negociado: **$184,920.50** distribuído em 5 contas estratégicas."
   };
 }
 
 export default function Home() {
   const [prompt, setPrompt] = useState("");
-  const [selectedModel, setSelectedModel] = useState("gemini-1.5-pro");
+  const [selectedModel, setSelectedModel] = useState("deepseek-v4");
   const [apiKey, setApiKey] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [response, setResponse] = useState<AgentResponse | null>(null);
   const [activeTab, setActiveTab] = useState<"overview" | "table" | "sql" | "steps" | "raw">("overview");
-  
+
   // UI toggles
   const [showSchemaModal, setShowSchemaModal] = useState(false);
   const [showToolsModal, setShowToolsModal] = useState(false);
@@ -218,7 +261,7 @@ export default function Home() {
   useEffect(() => {
     checkBackendHealth();
     // Pre-populate with first query result on load
-    handleRunQuery(PRESET_QUERIES[0].prompt, "gemini-1.5-pro");
+    handleRunQuery(PRESET_QUERIES[0].prompt, "deepseek-v4");
   }, []);
 
   const checkBackendHealth = async () => {
@@ -264,7 +307,7 @@ export default function Home() {
     const modelToUse = modelOverride || selectedModel;
 
     try {
-      // Direct call to FastAPI backend
+      // Chamada direta para o backend FastAPI
       let fetchUrl = "http://127.0.0.1:8000/api/agent/run";
       let payload = {
         prompt: finalPrompt,
@@ -278,7 +321,7 @@ export default function Home() {
         body: JSON.stringify(payload)
       }).catch(() => null);
 
-      // Fallback to Next.js API route proxy if direct port failed
+      // Fallback para a rota de proxy do Next.js
       if (!res || !res.ok) {
         res = await fetch("/api/agent", {
           method: "POST",
@@ -293,14 +336,14 @@ export default function Home() {
         setActiveTab("overview");
         setBackendStatus("online");
       } else {
-        // Fallback to high-fidelity instant demo response if backend is offline
+        // Fallback para o modo demo instantâneo se o backend estiver desconectado
         const fallback = getDemoFallback(finalPrompt, modelToUse);
         setResponse(fallback);
         setActiveTab("overview");
         setBackendStatus("offline");
       }
     } catch (err: any) {
-      console.warn("Using offline demo dataset:", err);
+      console.warn("Utilizando dados simulados de demonstração:", err);
       const fallback = getDemoFallback(finalPrompt, modelToUse);
       setResponse(fallback);
       setActiveTab("overview");
@@ -321,14 +364,14 @@ export default function Home() {
     }
   };
 
-  // Filtered rows for table view
+  // Linhas filtradas para a exibição em tabela
   const filteredRows = response?.table_data?.rows.filter((row) =>
     row.some((cell) => String(cell).toLowerCase().includes(tableSearch.toLowerCase()))
   ) || [];
 
   return (
     <div className="min-h-screen bg-slate-950 bg-mesh text-slate-100 flex flex-col">
-      {/* Top Navbar */}
+      {/* Barra de Navegação Superior */}
       <header className="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-3">
@@ -347,13 +390,13 @@ export default function Home() {
                 </span>
               </div>
               <p className="text-xs text-slate-400 hidden sm:block">
-                Next.js + Python FastAPI + Tailwind CSS
+                Next.js 16 + Python FastAPI + Tailwind CSS
               </p>
             </div>
           </div>
 
           <div className="flex items-center space-x-2 sm:space-x-3">
-            {/* Backend status indicator */}
+            {/* Indicador de status do backend */}
             <div
               className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg border text-xs font-medium cursor-pointer transition-colors ${
                 backendStatus === "online"
@@ -361,7 +404,7 @@ export default function Home() {
                   : "bg-amber-950/40 border-amber-800 text-amber-400 hover:bg-amber-950/60"
               }`}
               onClick={checkBackendHealth}
-              title="Нажмите для проверки статуса API"
+              title="Clique para verificar o status da API"
             >
               <div
                 className={`h-2 w-2 rounded-full ${
@@ -373,11 +416,11 @@ export default function Home() {
               <span className="hidden md:inline">
                 {backendStatus === "online"
                   ? `FastAPI :8000 ${backendLatency ? `(${backendLatency}ms)` : ""}`
-                  : "Подключение..."}
+                  : "Conectando..."}
               </span>
             </div>
 
-            {/* Database schema modal button */}
+            {/* Botão de Esquema do Banco */}
             <button
               onClick={() => {
                 setShowSchemaModal(true);
@@ -386,79 +429,79 @@ export default function Home() {
               className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700/70 hover:border-slate-500 text-slate-300 text-xs font-medium transition-all"
             >
               <Database className="h-3.5 w-3.5 text-cyan-400" />
-              <span className="hidden sm:inline">Схема БД</span>
+              <span className="hidden sm:inline">Esquema DB</span>
             </button>
 
-            {/* Tools registry modal button */}
+            {/* Botão de Registro de Ferramentas */}
             <button
               onClick={() => setShowToolsModal(true)}
               className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700/70 hover:border-slate-500 text-slate-300 text-xs font-medium transition-all"
             >
               <Cpu className="h-3.5 w-3.5 text-purple-400" />
-              <span className="hidden sm:inline">Инструменты</span>
+              <span className="hidden sm:inline">Ferramentas</span>
             </button>
 
-            {/* LinkedIn Featured Button */}
+            {/* Botão LinkedIn Featured */}
             <a
               href="#linkedin-guide"
               className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-blue-600/30 to-indigo-600/30 border border-blue-500/50 hover:border-blue-400 text-blue-200 text-xs font-medium transition-all shadow-sm"
-              title="Инструкция для раздела 'Em Destaque' в LinkedIn"
+              title="Instruções para a seção 'Em Destaque' no LinkedIn"
             >
               <LinkedInIcon className="h-3.5 w-3.5 text-blue-400" />
-              <span className="hidden lg:inline">LinkedIn Featured</span>
+              <span className="hidden lg:inline">LinkedIn Destaque</span>
             </a>
           </div>
         </div>
       </header>
 
-      {/* Main Content Area */}
+      {/* Conteúdo Principal */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        {/* Hero Section */}
+        {/* Seção Hero */}
         <div className="text-center space-y-4 max-w-3xl mx-auto">
           <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-slate-900/90 border border-slate-700 text-xs text-slate-300 shadow-inner">
             <Sparkles className="h-3.5 w-3.5 text-cyan-400 animate-spin" />
-            <span>Gemini & Hermes Autonomous Agent Hub</span>
+            <span>DeepSeek V4 & Hermes 3 • Agente Autônomo com Tool Calling</span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight">
-            Интеллектуальный агент с{" "}
+            Agente Inteligente com{" "}
             <span className="bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-400 bg-clip-text text-transparent">
               Tool Calling
             </span>
           </h1>
 
           <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
-            Принимает задачи на естественном языке, автоматически генерирует и выполняет SQL-запросы к корпоративной базе данных, парсит внешние API и возвращает структурированный результат в реактивном UI на Tailwind.
+            Recebe tarefas em linguagem natural, executa consultas SQL em bancos de dados relacionais (PostgreSQL/SQLite), consome APIs externas e sintetiza resultados estruturados em uma interface moderna com Tailwind CSS.
           </p>
         </div>
 
-        {/* Input Box & Model Selector */}
+        {/* Caixa de Entrada e Seleção de Modelos */}
         <div className="max-w-4xl mx-auto space-y-3">
           <div className="glass-card rounded-2xl p-2 sm:p-3 shadow-2xl border border-slate-800">
-            {/* Top bar inside card: Model pill selector */}
+            {/* Barra interna: Seletor de Modelo */}
             <div className="flex flex-wrap items-center justify-between gap-2 px-2 pb-2 border-b border-slate-800/80 text-xs">
               <div className="flex items-center space-x-2">
-                <span className="text-slate-400 font-medium">Модель агента:</span>
+                <span className="text-slate-400 font-medium">Modelo do Agente:</span>
                 <div className="flex items-center space-x-1 bg-slate-900 p-1 rounded-lg border border-slate-800">
                   <button
-                    onClick={() => setSelectedModel("gemini-1.5-pro")}
+                    onClick={() => setSelectedModel("deepseek-v4")}
                     className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
-                      selectedModel === "gemini-1.5-pro"
+                      selectedModel === "deepseek-v4"
                         ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm"
                         : "text-slate-400 hover:text-slate-200"
                     }`}
                   >
-                    ♊ Gemini 1.5 Pro
+                    🧠 DeepSeek V4
                   </button>
                   <button
-                    onClick={() => setSelectedModel("gemini-1.5-flash")}
+                    onClick={() => setSelectedModel("deepseek-chat")}
                     className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
-                      selectedModel === "gemini-1.5-flash"
+                      selectedModel === "deepseek-chat"
                         ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm"
                         : "text-slate-400 hover:text-slate-200"
                     }`}
                   >
-                    ⚡ Gemini Flash
+                    ⚡ DeepSeek Chat
                   </button>
                   <button
                     onClick={() => setSelectedModel("hermes-3")}
@@ -468,7 +511,7 @@ export default function Home() {
                         : "text-slate-400 hover:text-slate-200"
                     }`}
                   >
-                    🦙 Hermes 3
+                    🦙 Nous Hermes 3
                   </button>
                   <button
                     onClick={() => setSelectedModel("hermes-2-pro")}
@@ -486,14 +529,14 @@ export default function Home() {
               <button
                 onClick={() => setShowSettingsModal(true)}
                 className="flex items-center space-x-1 text-slate-400 hover:text-cyan-400 transition-colors"
-                title="Настройки ключей API"
+                title="Configurações de chaves de API"
               >
                 <Settings className="h-3.5 w-3.5" />
-                <span>API Keys</span>
+                <span>Chaves de API</span>
               </button>
             </div>
 
-            {/* Prompt Textarea & Action */}
+            {/* Campo de Entrada de Prompt */}
             <div className="pt-2 flex flex-col sm:flex-row gap-3 items-stretch sm:items-end">
               <div className="flex-1 relative">
                 <textarea
@@ -506,7 +549,7 @@ export default function Home() {
                     }
                   }}
                   rows={2}
-                  placeholder="Опишите задачу (напр. 'Покажи топ-5 клиентов по сумме заказов' или 'Курс Bitcoin и Ethereum')..."
+                  placeholder="Descreva a tarefa (ex: 'Mostre os top 5 clientes por faturamento' ou 'Cotação atual do Bitcoin')..."
                   className="w-full bg-slate-900/60 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all resize-none"
                 />
               </div>
@@ -520,11 +563,11 @@ export default function Home() {
                   {isLoading ? (
                     <>
                       <RefreshCw className="h-4 w-4 animate-spin text-white" />
-                      <span>Выполнение...</span>
+                      <span>Executando...</span>
                     </>
                   ) : (
                     <>
-                      <span>Запустить</span>
+                      <span>Executar</span>
                       <ArrowRight className="h-4 w-4" />
                     </>
                   )}
@@ -532,9 +575,9 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Quick Presets Pills */}
+            {/* Atalhos com Exemplos Prontos */}
             <div className="pt-3 border-t border-slate-800/60 flex flex-wrap gap-1.5 items-center">
-              <span className="text-[11px] text-slate-400 font-medium mr-1">Быстрые запросы:</span>
+              <span className="text-[11px] text-slate-400 font-medium mr-1">Consultas rápidas:</span>
               {PRESET_QUERIES.map((preset, idx) => (
                 <button
                   key={idx}
@@ -552,25 +595,25 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Loading Spinner Skeleton */}
+        {/* Animação de Carregamento */}
         {isLoading && (
           <div className="max-w-4xl mx-auto glass-card rounded-2xl p-8 border border-cyan-500/30 text-center space-y-4 animate-pulse">
             <div className="inline-flex p-3 rounded-full bg-cyan-950/60 border border-cyan-800 text-cyan-400">
               <Bot className="h-8 w-8 animate-bounce" />
             </div>
             <div className="space-y-2">
-              <h3 className="text-lg font-bold text-cyan-300">Агент анализирует запрос и выбирает инструмент...</h3>
+              <h3 className="text-lg font-bold text-cyan-300">DeepSeek V4 está analisando a tarefa e orquestrando as ferramentas...</h3>
               <p className="text-sm text-slate-400">
-                Определяется необходимость вызова локальной функции `execute_sql_query` или `fetch_external_api`.
+                Avaliando a necessidade de acionar a função local `execute_sql_query` ou `fetch_external_api`.
               </p>
             </div>
           </div>
         )}
 
-        {/* Results Area */}
+        {/* Área de Resultados */}
         {response && !isLoading && (
           <div className="max-w-5xl mx-auto space-y-6">
-            {/* Top Bar of Response: Model Badge, Provider & Latency */}
+            {/* Barra de Status da Resposta */}
             <div className="flex flex-wrap items-center justify-between gap-3 glass-card rounded-2xl p-4 border border-slate-800">
               <div className="flex items-center space-x-3">
                 <div className="h-10 w-10 rounded-xl bg-cyan-950/80 border border-cyan-800 flex items-center justify-center text-cyan-400">
@@ -578,7 +621,7 @@ export default function Home() {
                 </div>
                 <div>
                   <div className="flex items-center space-x-2">
-                    <span className="font-semibold text-sm text-white">Задача выполнена успешно</span>
+                    <span className="font-semibold text-sm text-white">Tarefa Concluída com Sucesso</span>
                     <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-950 text-indigo-300 border border-indigo-800">
                       {response.provider}
                     </span>
@@ -592,24 +635,24 @@ export default function Home() {
               <div className="flex items-center space-x-4 text-xs text-slate-400">
                 <div className="flex items-center space-x-1.5">
                   <Clock className="h-3.5 w-3.5 text-cyan-400" />
-                  <span>Общее время: <strong className="text-slate-200">{response.total_time_ms} мс</strong></span>
+                  <span>Tempo total: <strong className="text-slate-200">{response.total_time_ms} ms</strong></span>
                 </div>
                 <div className="flex items-center space-x-1.5">
                   <Layers className="h-3.5 w-3.5 text-purple-400" />
-                  <span>Шагов: <strong className="text-slate-200">{response.steps.length}</strong></span>
+                  <span>Passos: <strong className="text-slate-200">{response.steps.length}</strong></span>
                 </div>
                 <button
                   onClick={() => copyToClipboard(JSON.stringify(response, null, 2), "json")}
                   className="flex items-center space-x-1 px-2.5 py-1 rounded-md bg-slate-900 border border-slate-700 hover:border-slate-500 text-slate-300"
-                  title="Скопировать весь структурированный JSON ответ"
+                  title="Copiar JSON estruturado completo"
                 >
                   {copiedJSON ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
-                  <span>{copiedJSON ? "Скопировано" : "JSON"}</span>
+                  <span>{copiedJSON ? "Copiado" : "JSON"}</span>
                 </button>
               </div>
             </div>
 
-            {/* KPI Cards Grid */}
+            {/* Grade de Cartões de KPIs */}
             {response.kpis && response.kpis.length > 0 && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {response.kpis.map((kpi, idx) => (
@@ -638,7 +681,7 @@ export default function Home() {
               </div>
             )}
 
-            {/* Main Tabs Navigation */}
+            {/* Navegação por Abas */}
             <div className="border-b border-slate-800 flex space-x-2 text-sm font-medium">
               <button
                 onClick={() => setActiveTab("overview")}
@@ -649,7 +692,7 @@ export default function Home() {
                 }`}
               >
                 <BarChart3 className="h-4 w-4" />
-                <span>Обзор и инсайты</span>
+                <span>Visão Geral & Insights</span>
               </button>
 
               {response.table_data && (
@@ -662,7 +705,7 @@ export default function Home() {
                   }`}
                 >
                   <TableIcon className="h-4 w-4" />
-                  <span>Таблица данных ({response.table_data.total_count})</span>
+                  <span>Tabela de Dados ({response.table_data.total_count})</span>
                 </button>
               )}
 
@@ -676,7 +719,7 @@ export default function Home() {
                   }`}
                 >
                   <Code2 className="h-4 w-4" />
-                  <span>SQL-запрос</span>
+                  <span>Consulta SQL</span>
                 </button>
               )}
 
@@ -689,7 +732,7 @@ export default function Home() {
                 }`}
               >
                 <Terminal className="h-4 w-4" />
-                <span>Шаги рассуждения ({response.steps.length})</span>
+                <span>Rastreamento de Passos ({response.steps.length})</span>
               </button>
 
               <button
@@ -701,18 +744,17 @@ export default function Home() {
                 }`}
               >
                 <FileJson className="h-4 w-4" />
-                <span>Сырой ответ инструмента</span>
+                <span>Dados Brutos (JSON)</span>
               </button>
             </div>
 
-            {/* Tab: Overview */}
+            {/* Aba 1: Visão Geral */}
             {activeTab === "overview" && (
               <div className="space-y-6">
-                {/* Markdown synthesis card */}
                 <div className="glass-card rounded-2xl p-6 border border-slate-800 space-y-4">
                   <div className="flex items-center space-x-2 text-cyan-400 text-xs font-bold uppercase tracking-wider">
                     <Sparkles className="h-4 w-4" />
-                    <span>Синтезированный ответ агента</span>
+                    <span>Síntese Gerada pelo Agente</span>
                   </div>
                   <div className="text-slate-200 text-sm sm:text-base leading-relaxed whitespace-pre-line">
                     {response.markdown_answer}
@@ -721,7 +763,7 @@ export default function Home() {
                   {response.insights && response.insights.length > 0 && (
                     <div className="pt-4 border-t border-slate-800 space-y-2">
                       <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                        Ключевые инсайты:
+                        Principais Insights de Negócio:
                       </span>
                       <ul className="space-y-1.5 text-xs text-slate-300">
                         {response.insights.map((insight, idx) => (
@@ -735,16 +777,15 @@ export default function Home() {
                   )}
                 </div>
 
-                {/* Quick table preview if available */}
                 {response.table_data && (
                   <div className="glass-card rounded-2xl p-5 border border-slate-800 space-y-3">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm font-semibold text-white">Превью полученных данных</span>
+                      <span className="text-sm font-semibold text-white">Amostragem dos Dados Obtidos</span>
                       <button
                         onClick={() => setActiveTab("table")}
                         className="text-xs text-cyan-400 hover:underline flex items-center space-x-1"
                       >
-                        <span>Открыть полную таблицу</span>
+                        <span>Ver tabela completa</span>
                         <ArrowRight className="h-3 w-3" />
                       </button>
                     </div>
@@ -778,7 +819,7 @@ export default function Home() {
               </div>
             )}
 
-            {/* Tab: Table */}
+            {/* Aba 2: Tabela de Dados */}
             {activeTab === "table" && response.table_data && (
               <div className="glass-card rounded-2xl p-6 border border-slate-800 space-y-4">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
@@ -786,7 +827,7 @@ export default function Home() {
                     <Search className="h-4 w-4 text-slate-400 absolute left-3 top-3" />
                     <input
                       type="text"
-                      placeholder="Поиск по таблице..."
+                      placeholder="Filtrar registros na tabela..."
                       value={tableSearch}
                       onChange={(e) => setTableSearch(e.target.value)}
                       className="w-full bg-slate-900 border border-slate-800 rounded-lg pl-9 pr-3 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
@@ -795,7 +836,7 @@ export default function Home() {
 
                   <div className="flex items-center space-x-2 text-xs">
                     <span className="text-slate-400">
-                      Строк: {filteredRows.length} из {response.table_data.total_count}
+                      Exibindo {filteredRows.length} de {response.table_data.total_count} registros
                     </span>
                   </div>
                 </div>
@@ -827,20 +868,20 @@ export default function Home() {
               </div>
             )}
 
-            {/* Tab: SQL Query */}
+            {/* Aba 3: Consulta SQL */}
             {activeTab === "sql" && response.executed_sql && (
               <div className="glass-card rounded-2xl p-6 border border-slate-800 space-y-4">
                 <div className="flex justify-between items-center">
                   <div className="flex items-center space-x-2">
                     <Terminal className="h-4 w-4 text-cyan-400" />
-                    <span className="text-sm font-semibold text-white">Выполненный SQL-запрос</span>
+                    <span className="text-sm font-semibold text-white">Consulta SQL Executada</span>
                   </div>
                   <button
                     onClick={() => copyToClipboard(response.executed_sql || "", "sql")}
                     className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 hover:border-slate-500 text-xs text-slate-300"
                   >
                     {copiedSQL ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
-                    <span>{copiedSQL ? "Скопировано!" : "Копировать SQL"}</span>
+                    <span>{copiedSQL ? "Copiado!" : "Copiar SQL"}</span>
                   </button>
                 </div>
 
@@ -850,17 +891,17 @@ export default function Home() {
 
                 <div className="flex items-center space-x-2 text-xs text-slate-400">
                   <span className="px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-400 border border-emerald-800 font-medium">
-                    Безопасный SELECT
+                    SELECT Seguro
                   </span>
-                  <span>Время ответа СУБД: <strong>{response.raw_tool_data?.execution_time_ms || 1.2} мс</strong></span>
+                  <span>Tempo de resposta do banco: <strong>{response.raw_tool_data?.execution_time_ms || 0.81} ms</strong></span>
                 </div>
               </div>
             )}
 
-            {/* Tab: Reasoning Steps */}
+            {/* Aba 4: Rastreamento de Passos */}
             {activeTab === "steps" && (
               <div className="glass-card rounded-2xl p-6 border border-slate-800 space-y-4">
-                <h3 className="text-sm font-semibold text-white">Пошаговый трейс рассуждений и вызовов инструментов</h3>
+                <h3 className="text-sm font-semibold text-white">Rastreamento de Raciocínio e Disparo de Ferramentas</h3>
                 <div className="space-y-4">
                   {response.steps.map((st) => (
                     <div
@@ -870,12 +911,12 @@ export default function Home() {
                       <div className="flex items-center justify-between text-xs">
                         <div className="flex items-center space-x-2">
                           <span className="px-2 py-0.5 rounded-full font-bold bg-cyan-950 text-cyan-400 border border-cyan-800">
-                            Шаг {st.step_number}
+                            Passo {st.step_number}
                           </span>
                           <span className="font-semibold text-slate-200">{st.title}</span>
                         </div>
                         <span className="text-slate-400 text-[11px] font-mono">
-                          {st.duration_ms} мс
+                          {st.duration_ms} ms
                         </span>
                       </div>
                       <p className="text-xs text-slate-300">{st.description}</p>
@@ -890,10 +931,10 @@ export default function Home() {
               </div>
             )}
 
-            {/* Tab: Raw tool response */}
+            {/* Aba 5: Resposta Bruta JSON */}
             {activeTab === "raw" && (
               <div className="glass-card rounded-2xl p-6 border border-slate-800 space-y-3">
-                <span className="text-sm font-semibold text-white">Необработанный JSON результат инструмента</span>
+                <span className="text-sm font-semibold text-white">Resultado JSON Não Tratado da Ferramenta</span>
                 <pre className="p-4 rounded-xl bg-slate-950 font-mono text-xs text-slate-300 overflow-x-auto border border-slate-800 max-h-96">
                   {JSON.stringify(response.raw_tool_data, null, 2)}
                 </pre>
@@ -902,7 +943,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* LinkedIn Em Destaque / Featured Section Guide */}
+        {/* Guia para a Seção Em Destaque no LinkedIn */}
         <section id="linkedin-guide" className="max-w-5xl mx-auto pt-8 border-t border-slate-800 space-y-6">
           <div className="glass-card rounded-2xl p-6 sm:p-8 border border-blue-500/30 bg-gradient-to-br from-slate-900/90 via-slate-900/80 to-blue-950/20 space-y-6">
             <div className="flex items-center space-x-3">
@@ -911,64 +952,66 @@ export default function Home() {
               </div>
               <div>
                 <h2 className="text-xl font-bold text-white">
-                  Раздел «Em Destaque» (Featured) в LinkedIn
+                  Seção «Em Destaque» (Featured) no LinkedIn
                 </h2>
                 <p className="text-xs text-slate-400">
-                  Готовые материалы и инструкция для добавления проекта в витрину вашего профиля
+                  Instruções passo a passo e textos prontos para fixar este projeto no seu perfil profissional
                 </p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Instructions Card */}
+              {/* Card de Instruções */}
               <div className="space-y-3 bg-slate-950/60 p-4 rounded-xl border border-slate-800">
                 <h3 className="text-sm font-semibold text-cyan-400 flex items-center space-x-1.5">
                   <CheckCircle2 className="h-4 w-4" />
-                  <span>Пошаговая инструкция (Как закрепить):</span>
+                  <span>Passo a Passo para Fixar:</span>
                 </h3>
                 <ol className="text-xs text-slate-300 space-y-2 list-decimal list-inside leading-relaxed">
-                  <li>Зайдите в свой профиль LinkedIn и нажмите кнопку <strong>«Adicionar seção» (Добавить раздел)</strong>.</li>
-                  <li>Выберите <strong>«Recomendado» → «Adicionar em destaque» (Featured / Избранное)</strong>.</li>
-                  <li>Нажмите <strong>«+» → «Adicionar link»</strong> и вставьте ссылку на ваш GitHub репозиторий.</li>
-                  <li>Загрузите сгенерированную GIF-анимацию <code>demo.gif</code> в качестве превью.</li>
-                  <li>Вставьте готовый текст описания из соседнего блока и нажмите <strong>Salvar (Сохранить)</strong>.</li>
+                  <li>Acesse seu perfil do LinkedIn e clique no botão <strong>«Adicionar seção»</strong>.</li>
+                  <li>Selecione <strong>«Recomendado» → «Adicionar em destaque»</strong>.</li>
+                  <li>Clique no ícone <strong>«+» → «Adicionar um link»</strong> e insira o link do repositório: <code>https://github.com/vestek70/ai-agent-fullstack-hub</code>.</li>
+                  <li>Envie a animação <code>demo.gif</code> da pasta assets como imagem de miniatura.</li>
+                  <li>Copie o texto pronto ao lado, cole na descrição e clique em <strong>Salvar</strong>.</li>
                 </ol>
               </div>
 
-              {/* Ready-to-copy LinkedIn Post Copy */}
+              {/* Card com Texto Pronto para Copiar */}
               <div className="space-y-3 bg-slate-950/60 p-4 rounded-xl border border-slate-800">
                 <div className="flex justify-between items-center">
                   <h3 className="text-sm font-semibold text-blue-300">
-                    Текст для поста / карточки (PT-BR & EN):
+                    Texto Pronto para o Destaque / Post:
                   </h3>
                   <button
                     onClick={() => {
-                      const text = `🚀 AI Agent Fullstack Hub: Autonomous Tool Calling with Next.js & Python
+                      const text = `🚀 AI Agent Fullstack Hub: Next.js + Python FastAPI + Autonomous Tool Calling
 
-Construí um hub fullstack com Next.js + Python FastAPI onde um agente de IA (Gemini 1.5 Pro & Nous Hermes 3):
-✅ Recebe tarefas em linguagem natural
+Desenvolvi uma aplicação fullstack de Inteligência Artificial onde o agente autônomo (DeepSeek V4 & Nous Hermes 3):
+✅ Recebe instruções em linguagem natural
 ✅ Executa Tool Calling em tempo real (queries SQL complexas em PostgreSQL/SQLite e consumo de APIs externas)
 ✅ Retorna relatórios executivos com KPIs, tabelas interativas e síntese em UI moderna no Tailwind CSS!
 
-📦 Tech Stack: Next.js 15, React, Tailwind CSS, Python 3.12, FastAPI, SQLite/PostgreSQL, Gemini API, Hermes Function Calling.
+📦 Tech Stack: Next.js 16, React 19, Tailwind CSS v4, Python 3.12, FastAPI, SQLite/PostgreSQL, DeepSeek V4, Hermes Function Calling.
 
-#AIAgent #NextJS #Python #FastAPI #Gemini #Hermes #TailwindCSS #Fullstack #ToolCalling #ArtificialIntelligence`;
+🔗 Repositório no GitHub: https://github.com/vestek70/ai-agent-fullstack-hub
+
+#AIAgent #DeepSeek #NextJS #Python #FastAPI #TailwindCSS #Fullstack #ToolCalling #ArtificialIntelligence`;
                       navigator.clipboard.writeText(text);
-                      alert("Текст скопирован в буфер обмена!");
+                      alert("Texto copiado para a área de transferência!");
                     }}
                     className="text-xs text-cyan-400 hover:underline flex items-center space-x-1"
                   >
                     <Copy className="h-3 w-3" />
-                    <span>Скопировать</span>
+                    <span>Copiar Texto</span>
                   </button>
                 </div>
                 <div className="text-[11px] font-mono text-slate-300 p-3 rounded-lg bg-slate-900 border border-slate-800 max-h-36 overflow-y-auto leading-relaxed">
-                  🚀 <strong>AI Agent Fullstack Hub: Autonomous Tool Calling with Next.js & Python</strong><br/><br/>
-                  Construí um hub fullstack com Next.js + Python FastAPI onde um agente de IA (Gemini 1.5 Pro & Nous Hermes 3):<br/>
+                  🚀 <strong>AI Agent Fullstack Hub: DeepSeek V4 + Next.js + Python</strong><br/><br/>
+                  Desenvolvi uma aplicação fullstack de IA com DeepSeek V4 e Nous Hermes 3:<br/>
                   ✅ Recebe tarefas em linguagem natural<br/>
                   ✅ Executa Tool Calling em tempo real (queries SQL em PostgreSQL/SQLite & APIs externas)<br/>
                   ✅ Retorna resultados em UI interativa no Tailwind CSS!<br/><br/>
-                  #AIAgent #NextJS #Python #FastAPI #Gemini #Hermes #TailwindCSS #ToolCalling
+                  #AIAgent #DeepSeek #NextJS #Python #FastAPI #TailwindCSS #ToolCalling
                 </div>
               </div>
             </div>
@@ -976,14 +1019,14 @@ Construí um hub fullstack com Next.js + Python FastAPI onde um agente de IA (Ge
         </section>
       </main>
 
-      {/* Database Schema Modal */}
+      {/* Modal: Esquema do Banco de Dados */}
       {showSchemaModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
           <div className="glass-card rounded-2xl max-w-3xl w-full max-h-[80vh] flex flex-col border border-slate-700 shadow-2xl">
             <div className="p-4 border-b border-slate-800 flex justify-between items-center">
               <div className="flex items-center space-x-2">
                 <Database className="h-5 w-5 text-cyan-400" />
-                <h3 className="text-base font-bold text-white">Схема корпоративной базы данных</h3>
+                <h3 className="text-base font-bold text-white">Esquema do Banco de Dados Relacional</h3>
               </div>
               <button
                 onClick={() => setShowSchemaModal(false)}
@@ -997,9 +1040,9 @@ Construí um hub fullstack com Next.js + Python FastAPI onde um agente de IA (Ge
                 Object.entries(schemaData).map(([tblName, info]: [string, any]) => (
                   <div key={tblName} className="p-4 rounded-xl bg-slate-900/70 border border-slate-800 space-y-2">
                     <div className="flex justify-between items-center">
-                      <span className="font-bold text-cyan-300 text-sm">Таблица: {tblName}</span>
+                      <span className="font-bold text-cyan-300 text-sm">Tabela: {tblName}</span>
                       <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-[10px]">
-                        Записей: {info.total_rows}
+                        Registros: {info.total_rows}
                       </span>
                     </div>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2">
@@ -1015,7 +1058,7 @@ Construí um hub fullstack com Next.js + Python FastAPI onde um agente de IA (Ge
               ) : (
                 <div className="text-center py-8 text-slate-400">
                   <RefreshCw className="h-6 w-6 animate-spin mx-auto mb-2 text-cyan-400" />
-                  <span>Загрузка схемы базы данных...</span>
+                  <span>Carregando esquema do banco de dados...</span>
                 </div>
               )}
             </div>
@@ -1023,14 +1066,14 @@ Construí um hub fullstack com Next.js + Python FastAPI onde um agente de IA (Ge
         </div>
       )}
 
-      {/* Tools Modal */}
+      {/* Modal: Registro de Ferramentas */}
       {showToolsModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
           <div className="glass-card rounded-2xl max-w-2xl w-full max-h-[80vh] flex flex-col border border-slate-700 shadow-2xl">
             <div className="p-4 border-b border-slate-800 flex justify-between items-center">
               <div className="flex items-center space-x-2">
                 <Cpu className="h-5 w-5 text-purple-400" />
-                <h3 className="text-base font-bold text-white">Реестр локальных инструментов (Tool Calling)</h3>
+                <h3 className="text-base font-bold text-white">Registro de Ferramentas (Tool Calling)</h3>
               </div>
               <button
                 onClick={() => setShowToolsModal(false)}
@@ -1046,7 +1089,7 @@ Construí um hub fullstack com Next.js + Python FastAPI onde um agente de IA (Ge
                   <span className="font-bold text-white text-sm">execute_sql_query</span>
                 </div>
                 <p className="text-slate-300">
-                  Выполняет безопасные SQL SELECT запросы к таблицам `customers`, `products`, `orders`, `order_items`, `support_tickets`.
+                  Executa consultas SQL SELECT seguras nas tabelas `customers`, `products`, `orders`, `order_items` e `support_tickets`.
                 </p>
               </div>
 
@@ -1056,7 +1099,7 @@ Construí um hub fullstack com Next.js + Python FastAPI onde um agente de IA (Ge
                   <span className="font-bold text-white text-sm">fetch_external_api</span>
                 </div>
                 <p className="text-slate-300">
-                  Парсит данные из внешних сервисов: CoinGecko (криптовалюты), GitHub REST API (репозитории и звезды), Open Weather API (погода).
+                  Coleta dados em tempo real de serviços externos: CoinGecko (criptomoedas), GitHub REST API (repositórios e estrelas) e Open-Meteo (clima).
                 </p>
               </div>
 
@@ -1066,7 +1109,7 @@ Construí um hub fullstack com Next.js + Python FastAPI onde um agente de IA (Ge
                   <span className="font-bold text-white text-sm">calculate_kpis</span>
                 </div>
                 <p className="text-slate-300">
-                  Выполняет аналитические расчеты (суммы, средние чеки, экстремумы и процентные изменения) над выборками данных.
+                  Realiza agregações analíticas (soma, ticket médio, valores extremos e tendências) sobre as amostragens de dados.
                 </p>
               </div>
             </div>
@@ -1074,28 +1117,28 @@ Construí um hub fullstack com Next.js + Python FastAPI onde um agente de IA (Ge
         </div>
       )}
 
-      {/* Settings Modal */}
+      {/* Modal: Configurações de Chaves de API */}
       {showSettingsModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
           <div className="glass-card rounded-2xl max-w-md w-full flex flex-col border border-slate-700 shadow-2xl p-6 space-y-4">
             <div className="flex justify-between items-center border-b border-slate-800 pb-3">
               <h3 className="text-base font-bold text-white flex items-center space-x-2">
                 <Settings className="h-4 w-4 text-cyan-400" />
-                <span>Настройки API ключей</span>
+                <span>Configurações de Chaves de API</span>
               </h3>
               <button onClick={() => setShowSettingsModal(false)} className="text-slate-400 hover:text-white">✕</button>
             </div>
 
             <div className="space-y-3 text-xs">
               <p className="text-slate-400">
-                По умолчанию активирован встроенный локальный агент с моментальным временем ответа. Вы также можете указать свой ключ:
+                Por padrão, o agente semântico local integrado funciona imediatamente com latência ultrarrápida. Você também pode informar sua chave para inferência direta:
               </p>
 
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Google Gemini API Key:</label>
+                <label className="block text-slate-300 font-medium mb-1">DeepSeek API Key:</label>
                 <input
                   type="password"
-                  placeholder="AIzaSy..."
+                  placeholder="sk-..."
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
                   className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200"
@@ -1103,7 +1146,7 @@ Construí um hub fullstack com Next.js + Python FastAPI onde um agente de IA (Ge
               </div>
 
               <div className="p-3 rounded-lg bg-cyan-950/40 border border-cyan-800/80 text-cyan-300 text-[11px]">
-                💡 Если ключ не указан, агент автоматически использует встроенный семантический планировщик и выполняет все реальные SQL и API вызовы без ограничений.
+                💡 Se a chave não for informada, o sistema opera automaticamente via mecanismo semântico local, disparando todas as consultas SQL e chamadas de API reais.
               </div>
             </div>
 
@@ -1111,15 +1154,15 @@ Construí um hub fullstack com Next.js + Python FastAPI onde um agente de IA (Ge
               onClick={() => setShowSettingsModal(false)}
               className="w-full py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs"
             >
-              Сохранить
+              Salvar
             </button>
           </div>
         </div>
       )}
 
-      {/* Footer */}
+      {/* Rodapé */}
       <footer className="w-full border-t border-slate-800/80 py-6 text-center text-xs text-slate-500">
-        <p>ai-agent-fullstack-hub • Built with Next.js, Python, Tailwind CSS & AI Tool Calling</p>
+        <p>ai-agent-fullstack-hub • Desenvolvido com Next.js 16, Python, Tailwind CSS & DeepSeek V4 Tool Calling</p>
       </footer>
     </div>
   );

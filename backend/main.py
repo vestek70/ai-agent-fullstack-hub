@@ -1,6 +1,6 @@
 """
-FastAPI application for ai-agent-fullstack-hub.
-Provides REST API endpoints for agent execution, tool registry, and database schema introspection.
+Aplicação FastAPI para ai-agent-fullstack-hub.
+Fornece endpoints REST para execução do agente autônomo, registro de ferramentas e introspecção do banco de dados relacional.
 """
 
 from fastapi import FastAPI, HTTPException
@@ -14,11 +14,11 @@ from database import get_schema, execute_query, init_db
 
 app = FastAPI(
     title="AI Agent Fullstack Hub API",
-    description="Backend API powering Next.js + Python autonomous tool-calling agent with Gemini & Hermes support",
+    description="API de backend com suporte a Agente Autônomo com Tool Calling baseado em DeepSeek V4 e Nous Hermes",
     version="1.0.0"
 )
 
-# Enable CORS for Next.js development server
+# Habilitar CORS para o servidor Next.js
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -28,17 +28,17 @@ app.add_middleware(
 )
 
 class AgentRunRequest(BaseModel):
-    prompt: str = Field(..., description="Natural language prompt for the AI agent")
-    model: str = Field(default="gemini-1.5-pro", description="Model name (e.g. 'gemini-1.5-pro', 'hermes-3')")
-    api_key: Optional[str] = Field(default=None, description="Optional API key for Gemini or Hermes")
-    api_base: Optional[str] = Field(default=None, description="Optional custom base URL for Hermes/OpenAI-compatible server")
+    prompt: str = Field(..., description="Instrução em linguagem natural para o agente de IA")
+    model: str = Field(default="deepseek-v4", description="Nome do modelo (ex: 'deepseek-v4', 'hermes-3')")
+    api_key: Optional[str] = Field(default=None, description="Chave de API opcional para DeepSeek ou Hermes")
+    api_base: Optional[str] = Field(default=None, description="URL base personalizada opcional para o servidor compatível com OpenAI")
 
 class DirectSQLRequest(BaseModel):
-    query: str = Field(..., description="Direct SQL query for testing")
+    query: str = Field(..., description="Consulta SQL direta para testes")
 
 @app.on_event("startup")
 def startup_event():
-    # Ensure database is created and seeded
+    # Garantir que o banco de dados seja criado e populado
     init_db()
 
 @app.get("/api/health")
@@ -46,20 +46,20 @@ def health_check():
     return {
         "status": "healthy",
         "service": "ai-agent-fullstack-hub-backend",
-        "supported_models": ["gemini-1.5-pro", "gemini-1.5-flash", "hermes-3", "hermes-2-pro"],
+        "supported_models": ["deepseek-v4", "deepseek-chat", "hermes-3", "hermes-2-pro"],
         "tools_count": len(TOOL_DEFINITIONS)
     }
 
 @app.get("/api/agent/tools")
 def list_tools():
-    """Returns available tools and their JSON schemas."""
+    """Retorna ferramentas disponíveis e seus esquemas JSON."""
     return {
         "tools": TOOL_DEFINITIONS
     }
 
 @app.get("/api/db/schema")
 def database_schema():
-    """Returns database tables, column definitions, row counts, and sample data."""
+    """Retorna tabelas do banco de dados, definições de colunas, contagem de linhas e dados de amostra."""
     try:
         schema = get_schema()
         return {"success": True, "schema": schema}
@@ -68,18 +68,18 @@ def database_schema():
 
 @app.post("/api/db/query")
 def run_direct_query(req: DirectSQLRequest):
-    """Executes a direct SQL query against the database."""
+    """Executa uma consulta SQL direta no banco de dados."""
     result = execute_query(req.query)
     return result
 
 @app.post("/api/agent/run", response_model=AgentResponse)
 def execute_agent_task(req: AgentRunRequest):
     """
-    Main endpoint: receives user task in natural language, invokes agent,
-    triggers Tool Calling (SQL, external API, etc.), and returns structured result.
+    Endpoint principal: recebe a instrução do usuário em linguagem natural, aciona o agente,
+    dispara o Tool Calling (SQL, API externa, etc.) e retorna um resultado estruturado.
     """
     if not req.prompt.strip():
-        raise HTTPException(status_code=400, detail="Prompt cannot be empty")
+        raise HTTPException(status_code=400, detail="A instrução (prompt) não pode estar vazia")
         
     try:
         response = run_agent(
@@ -90,7 +90,7 @@ def execute_agent_task(req: AgentRunRequest):
         )
         return response
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Agent execution failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Falha na execução do agente: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn

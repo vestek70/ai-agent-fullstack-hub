@@ -9,7 +9,7 @@ import httpx
 from typing import Dict, Any, List, Optional
 from database import execute_query, get_schema
 
-# Tool schemas exposed to LLM (Gemini / Hermes / OpenAI format)
+# Esquemas de ferramentas expostos ao LLM (DeepSeek V4 / Hermes / OpenAI Tool Calling format)
 TOOL_DEFINITIONS = [
     {
         "name": "execute_sql_query",
@@ -157,7 +157,7 @@ def tool_fetch_external_api(source: str, query: str) -> Dict[str, Any]:
                 "items": [
                     {"name": "deepseek-ai/DeepSeek-V3", "stars": 74500, "description": "Next-generation open Mixture-of-Experts AI model with tool calling", "language": "Python", "url": "https://github.com/deepseek-ai/DeepSeek-V3"},
                     {"name": "NousResearch/Hermes-3", "stars": 28400, "description": "State-of-the-art open agent model with structured tool-calling & reasoning", "language": "Python", "url": "https://github.com/NousResearch/Hermes-3"},
-                    {"name": "google/genai-sdk-python", "stars": 19800, "description": "Official Python SDK for Google Gemini models and function calling", "language": "Python", "url": "https://github.com/google/genai-sdk-python"},
+                    {"name": "deepseek-ai/DeepSeek-Coder", "stars": 24800, "description": "Open code intelligence and autonomous tool calling agent model", "language": "Python", "url": "https://github.com/deepseek-ai/DeepSeek-Coder"},
                     {"name": "modelcontextprotocol/servers", "stars": 16200, "description": "Collection of reference Model Context Protocol (MCP) servers", "language": "TypeScript", "url": "https://github.com/modelcontextprotocol/servers"},
                     {"name": "run-llama/llama_index", "stars": 37100, "description": "Data framework for LLM applications to ingest, structure, and query", "language": "Python", "url": "https://github.com/run-llama/llama_index"}
                 ],
@@ -212,7 +212,7 @@ def tool_fetch_external_api(source: str, query: str) -> Dict[str, Any]:
                 "source": "HackerNews Top Feed",
                 "data_type": "news_articles",
                 "items": [
-                    {"title": "Gemini 2.5 and the Evolution of Autonomous Function Calling", "points": 482, "author": "devguru", "comments": 194},
+                    {"title": "DeepSeek V4 and the Evolution of Autonomous Function Calling", "points": 482, "author": "devguru", "comments": 194},
                     {"title": "Hermes 3: Open Weights Multi-Turn Agent Benchmark Results", "points": 395, "author": "nous_researcher", "comments": 128},
                     {"title": "Why Fullstack Next.js + Python is the Preferred Architecture for Agent Hubs", "points": 310, "author": "antigravity_dev", "comments": 89}
                 ],
