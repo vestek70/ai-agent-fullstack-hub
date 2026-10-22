@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+backend/venv/
+venv/
+.env
+.env.local
+
+# Python cache & database
+__pycache__/
+*.py[cod]
+*$py.class
+*.db
+backend/*.db
+
+# Next.js build output
+.next/
+out/
+dist/
+build/
+.turbo/
+
+# System and logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
